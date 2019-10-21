@@ -10,14 +10,12 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity2 extends AppCompatActivity {
     BottomNavigationView bottom;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
         bottom = findViewById(R.id.bottomNavigationView2);
 
@@ -31,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     FragmentManager fm = getSupportFragmentManager();
                     FragmentTransaction ft = fm.beginTransaction();
-                    complaint test = new complaint();
+                    complaint1 test = new complaint1();
                     ft.replace(R.id.replace, test);
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
                     //ft.addToBackStack(null);
@@ -53,11 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        complaint test = new complaint();
+        complaint1 test = new complaint1();
         ft.replace(R.id.replace, test);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
         //ft.addToBackStack(null);
         ft.commit();
-
     }
 }
