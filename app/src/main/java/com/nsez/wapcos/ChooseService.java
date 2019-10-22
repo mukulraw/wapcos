@@ -1,82 +1,76 @@
 package com.nsez.wapcos;
 
-import android.app.Dialog;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class complaint extends Fragment {
+public class ChooseService extends AppCompatActivity {
 
+    Toolbar toolbar;
     RecyclerView grid;
 
-    ProgressBar progress;
-
-    GridLayoutManager manager;
-    FAQAdapter adapter;
-
-    FloatingActionButton add;
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.complaint, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_choose_service);
 
+        toolbar = findViewById(R.id.toolbar);
+        grid = findViewById(R.id.grid);
 
+        setSupportActionBar(toolbar);
 
-        grid = view.findViewById(R.id.grid);
-        progress = view.findViewById(R.id.progress);
-        add = view.findViewById(R.id.add);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
+        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
 
-
-        adapter = new FAQAdapter(getContext());
-
-        manager = new GridLayoutManager(getContext() , 1);
-
-        grid.setAdapter(adapter);
-        grid.setLayoutManager(manager);
-
-
-        add.setOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent intent = new Intent(getContext() , ChooseService.class);
-                startActivity(intent);
-
+                finish();
             }
         });
-        
 
+        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setTitle("Add Complaint");
 
-
-
-        return view;
     }
 
     class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
         Context context;
 
+        int[] images = {
+                R.drawable.security,
+                R.drawable.lifts,
+                R.drawable.garden,
+                R.drawable.water,
+                R.drawable.drain,
+                R.drawable.lighting,
+                R.drawable.networking
+        };
+
+        String[] titles = {
+          "Security",
+          "Lifts",
+          "Garden/ Horticulture",
+          "Water Supply Lines",
+          "Sewer/ Drains",
+          "Common Area Electricity/ Firesystem/ DG Set",
+          "IT Network Support"
+        };
 
         public FAQAdapter(Context context) {
             this.context = context;
@@ -91,7 +85,7 @@ public class complaint extends Fragment {
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.faq_item_model, parent, false);
+            View view = inflater.inflate(R.layout.service_item_model, parent, false);
             return new ViewHolder(view);
         }
 
@@ -117,11 +111,13 @@ public class complaint extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 12;
+            return titles.length;
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
 
+            ImageView image;
+            TextView title;
 
 
             public ViewHolder(@NonNull View itemView) {
@@ -129,10 +125,9 @@ public class complaint extends Fragment {
 
 
 
+
             }
         }
     }
-
-
 
 }
