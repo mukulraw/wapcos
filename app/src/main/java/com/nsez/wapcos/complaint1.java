@@ -1,6 +1,7 @@
 package com.nsez.wapcos;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,6 +85,17 @@ public class complaint1 extends Fragment {
 
             holder.ques.setText(item.getRelation());
             holder.answer.setText(item.getName() + " (" + item.getAge() + ")");*/
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent intent = new Intent(context , ComplaintDetailsVendors.class);
+                    startActivity(intent);
+
+                }
+            });
+
         }
 
         @Override

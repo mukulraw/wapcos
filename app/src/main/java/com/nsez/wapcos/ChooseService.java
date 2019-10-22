@@ -3,6 +3,7 @@ package com.nsez.wapcos;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -15,6 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +26,8 @@ public class ChooseService extends AppCompatActivity {
 
     Toolbar toolbar;
     RecyclerView grid;
+    FAQAdapter adapter;
+    GridLayoutManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +36,12 @@ public class ChooseService extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         grid = findViewById(R.id.grid);
+
+        adapter = new FAQAdapter(this);
+        manager = new GridLayoutManager(this , 3);
+
+        grid.setAdapter(adapter);
+        grid.setLayoutManager(manager);
 
         setSupportActionBar(toolbar);
 
@@ -90,18 +102,26 @@ public class ChooseService extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
             /*Datum item = list.get(position);
 
             holder.ques.setText(item.getRelation());
             holder.answer.setText(item.getName() + " (" + item.getAge() + ")");*/
 
+            holder.title.setText(titles[position]);
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            String uri = "drawable://" + images[position];
+
+            ImageLoader loader = ImageLoader.getInstance();
+
+            loader.displayImage(uri , holder.image);
+
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    Intent intent = new Intent(context , ComplaintDetailsUser.class);
+                    Intent intent = new Intent(context , ComplaintForm.class);
+                    intent.putExtra("title" , titles[position]);
                     startActivity(intent);
 
                 }
@@ -124,6 +144,8 @@ public class ChooseService extends AppCompatActivity {
                 super(itemView);
 
 
+                image = itemView.findViewById(R.id.image);
+                title = itemView.findViewById(R.id.title);
 
 
             }
