@@ -7,24 +7,65 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.nsez.wapcos.getConmplainPOJO.getComplainBean;
+import com.nsez.wapcos.singleComplaintPOJO.Data;
+import com.nsez.wapcos.singleComplaintPOJO.singleComplaintBean;
 
 import org.w3c.dom.Text;
 
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ComplaintDetailsUser extends AppCompatActivity {
 
     Toolbar toolbar;
     TextView comment;
 
+    TextView name , category , date , ack , closure , status , handled , complaint , vname , category1 , email , phone , altemail , altphone , company , address , closure1;
+LinearLayout attachment;
+    String cid , title;
+    ProgressBar progress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complaint_details_user);
 
+        cid = getIntent().getStringExtra("cid");
+        title = getIntent().getStringExtra("title");
+
         comment = findViewById(R.id.comment);
         toolbar = findViewById(R.id.toolbar);
+        name = findViewById(R.id.name);
+        category = findViewById(R.id.category);
+        date = findViewById(R.id.date);
+        ack = findViewById(R.id.ack);
+        closure = findViewById(R.id.closure);
+        status = findViewById(R.id.status);
+        complaint = findViewById(R.id.complaint);
+        vname = findViewById(R.id.vname);
+        handled = findViewById(R.id.handled);
+        category1 = findViewById(R.id.category1);
+        email = findViewById(R.id.email);
+        phone = findViewById(R.id.phone);
+        altemail = findViewById(R.id.altemail);
+        altphone = findViewById(R.id.altphone);
+        company = findViewById(R.id.company);
+        address = findViewById(R.id.address);
+        closure1 = findViewById(R.id.closure1);
+        attachment = findViewById(R.id.attachment);
+        progress = findViewById(R.id.progress);
+
 
         setSupportActionBar(toolbar);
 
@@ -40,7 +81,7 @@ public class ComplaintDetailsUser extends AppCompatActivity {
         });
 
         toolbar.setTitleTextColor(Color.WHITE);
-        toolbar.setTitle("IT002");
+        toolbar.setTitle(title);
 
         comment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +92,72 @@ public class ComplaintDetailsUser extends AppCompatActivity {
 
             }
         });
+
+
+
+        progress.setVisibility(View.VISIBLE);
+
+        Bean b = (Bean) getApplicationContext();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(b.baseurl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+        Call<singleComplaintBean> call = cr.getComplainById(cid);
+
+        call.enqueue(new Callback<singleComplaintBean>() {
+            @Override
+            public void onResponse(Call<singleComplaintBean> call, Response<singleComplaintBean> response) {
+
+                if (response.body().getStatus().equals("1"))
+                {
+
+                    Data item = response.body().getData();
+
+                    name.setText(item.getName());
+                    category.setText(item.getCategory());
+                    date.setText(item.getCreatedDate());
+                    ack.setText(item.getAkdDate());
+                    closure.setText(item.getExpClDate());
+                    status.setText(item.getStatus());
+                    handled.setText(item.getHandled());
+                    complaint.setText(item.getComplain());
+                    vname.setText(item.getVname());
+                    category1.setText(item.getCategory());
+                    email.setText(item.getEmail());
+                    phone.setText(item.getPhone());
+                    altemail.setText(item.getAlternateemail());
+                    altphone.setText(item.getAlternatephone());
+                    company.setText(item.getCompany());
+                    address.setText(item.getAddress());
+
+                    if (item.getClosing().length() > 0)
+                    {
+                        closure1.setText(item.getClosing());
+                        closure1.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        closure1.setVisibility(View.GONE);
+                    }
+
+                }
+
+                progress.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailure(Call<singleComplaintBean> call, Throwable t) {
+                progress.setVisibility(View.GONE);
+            }
+        });
+
+
 
     }
 }

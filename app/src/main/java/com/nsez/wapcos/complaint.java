@@ -21,9 +21,18 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nsez.wapcos.getConmplainPOJO.Datum;
+import com.nsez.wapcos.getConmplainPOJO.getComplainBean;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class complaint extends Fragment {
 
@@ -33,7 +42,7 @@ public class complaint extends Fragment {
 
     GridLayoutManager manager;
     FAQAdapter adapter;
-
+    List<Datum> list;
     FloatingActionButton add;
 
     @Nullable
@@ -41,6 +50,7 @@ public class complaint extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.complaint, container, false);
 
+        list = new ArrayList<>();
 
 
         grid = view.findViewById(R.id.grid);
@@ -49,7 +59,7 @@ public class complaint extends Fragment {
 
 
 
-        adapter = new FAQAdapter(getContext());
+        adapter = new FAQAdapter(getContext() , list);
 
         manager = new GridLayoutManager(getContext() , 1);
 
@@ -71,21 +81,66 @@ public class complaint extends Fragment {
 
 
 
+
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+        progress.setVisibility(View.VISIBLE);
+
+        Bean b = (Bean) getActivity().getApplicationContext();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(b.baseurl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+        Call<getComplainBean> call = cr.getComplain(SharePreferenceUtils.getInstance().getString("id"));
+
+        call.enqueue(new Callback<getComplainBean>() {
+            @Override
+            public void onResponse(Call<getComplainBean> call, Response<getComplainBean> response) {
+
+                if (response.body().getStatus().equals("1"))
+                {
+                    adapter.setData(response.body().getData());
+                }
+
+                progress.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailure(Call<getComplainBean> call, Throwable t) {
+                progress.setVisibility(View.GONE);
+            }
+        });
+
+
     }
 
     class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
         Context context;
+        List<Datum> list = new ArrayList<>();
 
 
-        public FAQAdapter(Context context) {
+        public FAQAdapter(Context context , List<Datum> list) {
             this.context = context;
+            this.list = list;
         }
 
-      /*  public void setData(List<Datum> list) {
+        public void setData(List<Datum> list) {
             this.list = list;
             notifyDataSetChanged();
-        }*/
+        }
 
         @NonNull
         @Override
@@ -97,10 +152,16 @@ public class complaint extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            /*Datum item = list.get(position);
+            final Datum item = list.get(position);
 
-            holder.ques.setText(item.getRelation());
-            holder.answer.setText(item.getName() + " (" + item.getAge() + ")");*/
+            holder.uid.setText(item.getUniqueId());
+            holder.name.setText(item.getName());
+            holder.category.setText(item.getCategory());
+            holder.date.setText(item.getCreatedDate());
+            holder.complain.setText(item.getComplain());
+            holder.ack.setText(item.getAkdDate());
+            holder.closure.setText(item.getExpClDate());
+            holder.status.setText(item.getStatus());
 
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +169,8 @@ public class complaint extends Fragment {
                 public void onClick(View view) {
 
                     Intent intent = new Intent(context , ComplaintDetailsUser.class);
+                    intent.putExtra("cid" , item.getId());
+                    intent.putExtra("title" , item.getName());
                     startActivity(intent);
 
                 }
@@ -117,16 +180,25 @@ public class complaint extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 12;
+            return list.size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
 
+            TextView uid , name , category , date , complain , ack , closure , status;
 
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
 
+                uid = itemView.findViewById(R.id.textView5);
+                name = itemView.findViewById(R.id.textView13);
+                category = itemView.findViewById(R.id.textView14);
+                date = itemView.findViewById(R.id.textView15);
+                complain = itemView.findViewById(R.id.textView16);
+                ack = itemView.findViewById(R.id.textView17);
+                closure = itemView.findViewById(R.id.textView18);
+                status = itemView.findViewById(R.id.textView6);
 
 
             }

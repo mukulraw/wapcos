@@ -22,11 +22,40 @@ public class Splash extends AppCompatActivity {
         t.schedule(new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(Splash.this , Choose.class);
-                startActivity(intent);
-                finish();
+                startApp();
             }
         } , 1200);
 
     }
+
+    void startApp()
+    {
+
+        String id = SharePreferenceUtils.getInstance().getString("id");
+        String type = SharePreferenceUtils.getInstance().getString("type");
+
+        if (id.length() > 0)
+        {
+            if (type.equals("user"))
+            {
+                Intent intent = new Intent(Splash.this , MainActivity.class);
+                startActivity(intent);
+                finishAffinity();
+            }
+            else
+            {
+                Intent intent = new Intent(Splash.this , MainActivity2.class);
+                startActivity(intent);
+                finishAffinity();
+            }
+        }
+        else
+        {
+            Intent intent = new Intent(Splash.this , Choose.class);
+            startActivity(intent);
+            finish();
+        }
+
+    }
+
 }
