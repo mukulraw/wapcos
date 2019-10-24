@@ -6,12 +6,22 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.downloader.Error;
+import com.downloader.OnCancelListener;
+import com.downloader.OnDownloadListener;
+import com.downloader.OnPauseListener;
+import com.downloader.OnProgressListener;
+import com.downloader.OnStartOrResumeListener;
+import com.downloader.PRDownloader;
+import com.downloader.Progress;
 import com.nsez.wapcos.getConmplainPOJO.getComplainBean;
 import com.nsez.wapcos.singleComplaintPOJO.Data;
 import com.nsez.wapcos.singleComplaintPOJO.singleComplaintBean;
@@ -41,6 +51,8 @@ public class ComplaintDetailsUser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complaint_details_user);
+
+        PRDownloader.initialize(getApplicationContext());
 
         cid = getIntent().getStringExtra("cid");
 
@@ -120,7 +132,7 @@ public class ComplaintDetailsUser extends AppCompatActivity {
 
                 if (response.body().getStatus().equals("1")) {
 
-                    Data item = response.body().getData();
+                    final Data item = response.body().getData();
 
                     name.setText(item.getName());
                     category.setText(item.getCategory());
@@ -150,6 +162,62 @@ public class ComplaintDetailsUser extends AppCompatActivity {
 
                         tit.setText(item.getImages().get(i).getImage());
 
+
+                        final int finalI = i;
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                int downloadId = PRDownloader.download("http://www.nsezwapcos.com/admin/upload/" + item.getImages().get(finalI).getImage(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() , item.getImages().get(finalI).getImage())
+                                        .build()
+                                        .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                                            @Override
+                                            public void onStartOrResume() {
+
+                                            }
+                                        })
+                                        .setOnPauseListener(new OnPauseListener() {
+                                            @Override
+                                            public void onPause() {
+
+                                            }
+                                        })
+                                        .setOnCancelListener(new OnCancelListener() {
+                                            @Override
+                                            public void onCancel() {
+
+                                            }
+                                        })
+                                        .setOnProgressListener(new OnProgressListener() {
+                                            @Override
+                                            public void onProgress(Progress progress) {
+
+                                                Log.d("progress" , String.valueOf(progress.totalBytes));
+
+                                            }
+                                        })
+                                        .start(new OnDownloadListener() {
+                                            @Override
+                                            public void onDownloadComplete() {
+
+                                                Log.d("completed" , "completed");
+                                                Toast.makeText(ComplaintDetailsUser.this, "Successfully downloaded in Downloads", Toast.LENGTH_SHORT).show();
+
+                                            }
+
+                                            @Override
+                                            public void onError(Error error) {
+
+                                                Log.d("error" , error.getConnectionException().toString());
+
+                                            }
+
+                                        });
+
+                            }
+                        });
+
+
                         attachment.addView(view);
 
                     }
@@ -177,6 +245,59 @@ public class ComplaintDetailsUser extends AppCompatActivity {
             @Override
             public void onFailure(Call<singleComplaintBean> call, Throwable t) {
                 progress.setVisibility(View.GONE);
+            }
+        });
+
+        closure1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int downloadId = PRDownloader.download("http://www.nsezwapcos.com/admin/upload/" + closure1.getText().toString(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() , closure1.getText().toString())
+                        .build()
+                        .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                            @Override
+                            public void onStartOrResume() {
+
+                            }
+                        })
+                        .setOnPauseListener(new OnPauseListener() {
+                            @Override
+                            public void onPause() {
+
+                            }
+                        })
+                        .setOnCancelListener(new OnCancelListener() {
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        })
+                        .setOnProgressListener(new OnProgressListener() {
+                            @Override
+                            public void onProgress(Progress progress) {
+
+                                Log.d("progress" , String.valueOf(progress.totalBytes));
+
+                            }
+                        })
+                        .start(new OnDownloadListener() {
+                            @Override
+                            public void onDownloadComplete() {
+
+                                Log.d("completed" , "completed");
+                                Toast.makeText(ComplaintDetailsUser.this, "Successfully downloaded in Downloads", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onError(Error error) {
+
+                                Log.d("error" , error.getConnectionException().toString());
+
+                            }
+
+                        });
+
             }
         });
 

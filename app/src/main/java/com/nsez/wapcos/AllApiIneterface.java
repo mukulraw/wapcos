@@ -5,6 +5,7 @@ import com.nsez.wapcos.getConmplainPOJO.getComplainBean;
 import com.nsez.wapcos.loginPOJO.loginBean;
 import com.nsez.wapcos.singleComplaintPOJO.singleComplaintBean;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -79,6 +80,14 @@ public interface AllApiIneterface {
     Call<String> changeStatus(
             @Part("status") String status,
             @Part("id") String id
+    );
+
+    @Multipart
+    @POST("api/close.php")
+    Call<String> close(
+            @Part("status") String status,
+            @Part("id") String id,
+            @Part MultipartBody.Part file1
     );
 
 }
