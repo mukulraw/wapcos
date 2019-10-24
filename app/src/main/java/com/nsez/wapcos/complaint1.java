@@ -1,11 +1,16 @@
 package com.nsez.wapcos;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,7 +24,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nsez.wapcos.getConmplainPOJO.Datum;
 import com.nsez.wapcos.getConmplainPOJO.getComplainBean;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,6 +47,9 @@ public class complaint1 extends Fragment {
     FAQAdapter adapter;
     List<Datum> list;
     FloatingActionButton add;
+    TextView date;
+    String dd;
+
 
     @Nullable
     @Override
@@ -50,7 +61,7 @@ public class complaint1 extends Fragment {
         grid = view.findViewById(R.id.grid);
         progress = view.findViewById(R.id.progress);
         add = view.findViewById(R.id.add);
-
+        date = view.findViewById(R.id.date);
 
 
         adapter = new FAQAdapter(getContext() , list);
@@ -63,7 +74,95 @@ public class complaint1 extends Fragment {
 
 
 
-        
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.date_dialog);
+                dialog.show();
+
+
+                final DatePicker picker = dialog.findViewById(R.id.date);
+                Button ok = dialog.findViewById(R.id.ok);
+
+                long now = System.currentTimeMillis() - 1000;
+                picker.setMaxDate(now);
+
+                ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        int year = picker.getYear();
+                        int month = picker.getMonth();
+                        int day = picker.getDayOfMonth();
+
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(year, month, day);
+
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                        String strDate = format.format(calendar.getTime());
+
+                        dialog.dismiss();
+
+                        date.setText("Date - " + strDate + " (click to change)");
+
+                        dd = strDate;
+
+                        progress.setVisibility(View.VISIBLE);
+
+                        Bean b = (Bean) getActivity().getApplicationContext();
+
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl(b.baseurl)
+                                .addConverterFactory(ScalarsConverterFactory.create())
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                        Call<getComplainBean> call = cr.getComplain1(SharePreferenceUtils.getInstance().getString("id") , dd);
+
+                        call.enqueue(new Callback<getComplainBean>() {
+                            @Override
+                            public void onResponse(Call<getComplainBean> call, Response<getComplainBean> response) {
+
+                                if (response.body().getStatus().equals("1"))
+                                {
+                                    adapter.setData(response.body().getData());
+                                }
+
+                                progress.setVisibility(View.GONE);
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<getComplainBean> call, Throwable t) {
+                                progress.setVisibility(View.GONE);
+                            }
+                        });
+
+
+                    }
+                });
+
+
+            }
+        });
+
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = df.format(c);
+
+        Log.d("dddd", formattedDate);
+
+        date.setText("Date - " + formattedDate + " (click to change)");
+
+        dd = formattedDate;
+
 
 
 
@@ -88,7 +187,7 @@ public class complaint1 extends Fragment {
 
         AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
-        Call<getComplainBean> call = cr.getComplain1(SharePreferenceUtils.getInstance().getString("category"));
+        Call<getComplainBean> call = cr.getComplain1(SharePreferenceUtils.getInstance().getString("category") , dd);
 
         call.enqueue(new Callback<getComplainBean>() {
             @Override

@@ -3,6 +3,7 @@ package com.nsez.wapcos;
 import com.nsez.wapcos.feedbackPOJO.feedbackBean;
 import com.nsez.wapcos.getConmplainPOJO.getComplainBean;
 import com.nsez.wapcos.loginPOJO.loginBean;
+import com.nsez.wapcos.searchPOJO.searchBean;
 import com.nsez.wapcos.singleComplaintPOJO.singleComplaintBean;
 
 import java.util.List;
@@ -32,13 +33,15 @@ public interface AllApiIneterface {
     @Multipart
     @POST("api/getComplain.php")
     Call<getComplainBean> getComplain(
-            @Part("user_id") String user_id
+            @Part("user_id") String user_id,
+            @Part("date") String date
     );
 
     @Multipart
     @POST("api/getComplain1.php")
     Call<getComplainBean> getComplain1(
-            @Part("user_id") String user_id
+            @Part("user_id") String user_id,
+            @Part("date") String date
     );
 
     @Multipart
@@ -106,6 +109,13 @@ public interface AllApiIneterface {
             @Part("address") String address,
             @Part("tag") String tag,
             @Part List<MultipartBody.Part> files
+    );
+
+    @Multipart
+    @POST("api/search.php")
+    Call<searchBean> search(
+            @Part("user_id") String user_id,
+            @Part("data") String data
     );
 
 }
