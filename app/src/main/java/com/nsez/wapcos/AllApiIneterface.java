@@ -5,6 +5,8 @@ import com.nsez.wapcos.getConmplainPOJO.getComplainBean;
 import com.nsez.wapcos.loginPOJO.loginBean;
 import com.nsez.wapcos.singleComplaintPOJO.singleComplaintBean;
 
+import java.util.List;
+
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Multipart;
@@ -88,6 +90,22 @@ public interface AllApiIneterface {
             @Part("status") String status,
             @Part("id") String id,
             @Part MultipartBody.Part file1
+    );
+
+    @Multipart
+    @POST("api/addComplain.php")
+    Call<String> addComplain(
+            @Part("user_id") String user_id,
+            @Part("category") String category,
+            @Part("name") String name,
+            @Part("email") String email,
+            @Part("phone") String phone,
+            @Part("designation") String designation,
+            @Part("complain") String complain,
+            @Part("company") String company,
+            @Part("address") String address,
+            @Part("tag") String tag,
+            @Part List<MultipartBody.Part> files
     );
 
 }

@@ -56,6 +56,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:id="@+id/name"
+                    android:inputType="textPersonName"
                     android:background="@drawable/white_round"
                     android:hint="tap to enter"
                     android:padding="10dp" />
@@ -77,6 +79,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:id="@+id/email"
+                    android:inputType="textEmailAddress"
                     android:background="@drawable/white_round"
                     android:hint="tap to enter"
                     android:padding="10dp" />
@@ -98,6 +102,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:id="@+id/phone"
+                    android:inputType="phone"
                     android:background="@drawable/white_round"
                     android:hint="tap to enter"
                     android:padding="10dp" />
@@ -120,6 +126,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:id="@+id/designation"
+                    android:inputType="text"
                     android:background="@drawable/white_round"
                     android:hint="tap to enter"
                     android:padding="10dp" />
@@ -142,6 +150,8 @@
                     android:layout_marginTop="8dp"
                     android:gravity="start"
                     android:layout_marginEnd="8dp"
+                    android:id="@+id/complaint"
+                    android:inputType="text"
                     android:background="@drawable/white_round"
                     android:hint="tap to enter"
                     android:padding="10dp" />
@@ -163,6 +173,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:id="@+id/company"
+                    android:inputType="text"
                     android:background="@drawable/white_round"
                     android:hint="tap to enter"
                     android:padding="10dp" />
@@ -185,6 +197,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
+                    android:id="@+id/address"
+                    android:inputType="text"
                     android:background="@drawable/white_round"
                     android:hint="tap to enter"
                     android:padding="10dp" />
@@ -201,6 +215,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/attachment"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    />
 
                 <Button
                     android:layout_width="wrap_content"
@@ -208,8 +231,23 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
+                    android:id="@+id/add_file"
                     android:layout_marginBottom="16dp"
                     android:text="ADD FILE"
+                    />
+
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SUBMIT"
+                    android:id="@+id/submit"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/accent_round"
+                    android:textColor="#ffffff"
                     />
 
 
@@ -222,5 +260,12 @@
 
 
     </LinearLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/progress"
+        android:visibility="gone"/>
 
 </RelativeLayout>

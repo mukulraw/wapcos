@@ -84,6 +84,26 @@ public class ChooseService extends AppCompatActivity {
           "IT Network Support"
         };
 
+        String[] ids = {
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7"
+        };
+
+        String[] tags = {
+                "SC00",
+                "LT00",
+                "GH00",
+                "WS00",
+                "SD00",
+                "CA00",
+                "IT00"
+        };
+
         public FAQAdapter(Context context) {
             this.context = context;
         }
@@ -122,6 +142,8 @@ public class ChooseService extends AppCompatActivity {
 
                     Intent intent = new Intent(context , ComplaintForm.class);
                     intent.putExtra("title" , titles[position]);
+                    intent.putExtra("id" , ids[position]);
+                    intent.putExtra("tag" , tags[position]);
                     startActivity(intent);
 
                 }
