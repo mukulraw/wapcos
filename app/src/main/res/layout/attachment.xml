@@ -4,8 +4,9 @@
     android:text="Attachment 1"
     android:background="@drawable/white_round"
     android:padding="8dp"
+    android:id="@+id/title"
+    android:layout_marginBottom="8dp"
     android:gravity="center_vertical"
     android:drawableEnd="@drawable/ic_download_button"
     android:drawablePadding="5dp"
-    android:layout_marginTop="16dp"
     xmlns:android="http://schemas.android.com/apk/res/android" />

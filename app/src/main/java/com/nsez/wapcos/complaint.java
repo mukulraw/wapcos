@@ -170,7 +170,7 @@ public class complaint extends Fragment {
 
                     Intent intent = new Intent(context , ComplaintDetailsUser.class);
                     intent.putExtra("cid" , item.getId());
-                    intent.putExtra("title" , item.getName());
+                    intent.putExtra("title" , item.getUniqueId());
                     startActivity(intent);
 
                 }

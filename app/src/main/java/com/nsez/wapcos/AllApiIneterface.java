@@ -1,5 +1,6 @@
 package com.nsez.wapcos;
 
+import com.nsez.wapcos.feedbackPOJO.feedbackBean;
 import com.nsez.wapcos.getConmplainPOJO.getComplainBean;
 import com.nsez.wapcos.loginPOJO.loginBean;
 import com.nsez.wapcos.singleComplaintPOJO.singleComplaintBean;
@@ -35,6 +36,28 @@ public interface AllApiIneterface {
     @POST("api/getComplainById.php")
     Call<singleComplaintBean> getComplainById(
             @Part("cid") String cid
+    );
+
+    @Multipart
+    @POST("api/getFeedback.php")
+    Call<feedbackBean> getFeedback(
+            @Part("cid") String cid
+    );
+
+    @Multipart
+    @POST("api/submitFeedback.php")
+    Call<String> submitFeedback(
+            @Part("feedback") String feedback,
+            @Part("id") String id,
+            @Part("user_id") String user_id,
+            @Part("vendor_id") String vendor_id
+    );
+
+    @Multipart
+    @POST("api/changeStatus.php")
+    Call<String> changeStatus(
+            @Part("status") String status,
+            @Part("id") String id
     );
 
 }

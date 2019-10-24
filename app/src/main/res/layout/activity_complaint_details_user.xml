@@ -193,10 +193,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="8dp"
                     android:id="@+id/attachment"
                     android:gravity="center_vertical"
-                    android:drawablePadding="5dp"
                     android:layout_marginTop="16dp"
                     />
 
@@ -363,6 +361,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="REOPEN"
+                    android:id="@+id/reopen"
                     android:gravity="center"
                     android:padding="10dp"
                     android:layout_marginBottom="16dp"

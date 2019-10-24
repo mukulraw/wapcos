@@ -63,6 +63,10 @@ public class Data {
     @SerializedName("address")
     @Expose
     private String address;
+    @SerializedName("vid")
+    @Expose
+    private String vid;
+
 
     public String getId() {
         return id;
@@ -214,5 +218,14 @@ public class Data {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+
+    public String getVid() {
+        return vid;
+    }
+
+    public void setVid(String vid) {
+        this.vid = vid;
     }
 }

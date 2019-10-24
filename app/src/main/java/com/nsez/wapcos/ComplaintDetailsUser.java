@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nsez.wapcos.getConmplainPOJO.getComplainBean;
 import com.nsez.wapcos.singleComplaintPOJO.Data;
@@ -31,9 +32,9 @@ public class ComplaintDetailsUser extends AppCompatActivity {
     Toolbar toolbar;
     TextView comment;
 
-    TextView name , category , date , ack , closure , status , handled , complaint , vname , category1 , email , phone , altemail , altphone , company , address , closure1;
-LinearLayout attachment;
-    String cid , title;
+    TextView name, category, date, ack, closure, status, handled, complaint, vname, category1, email, phone, altemail, altphone, company, address, closure1, reopen;
+    LinearLayout attachment;
+    String cid, title , vid;
     ProgressBar progress;
 
     @Override
@@ -42,6 +43,7 @@ LinearLayout attachment;
         setContentView(R.layout.activity_complaint_details_user);
 
         cid = getIntent().getStringExtra("cid");
+
         title = getIntent().getStringExtra("title");
 
         comment = findViewById(R.id.comment);
@@ -65,6 +67,7 @@ LinearLayout attachment;
         closure1 = findViewById(R.id.closure1);
         attachment = findViewById(R.id.attachment);
         progress = findViewById(R.id.progress);
+        reopen = findViewById(R.id.reopen);
 
 
         setSupportActionBar(toolbar);
@@ -87,12 +90,14 @@ LinearLayout attachment;
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(ComplaintDetailsUser.this , Comments.class);
+                Intent intent = new Intent(ComplaintDetailsUser.this, Comments.class);
+                intent.putExtra("cid" , cid);
+                intent.putExtra("vid" , vid);
+                intent.putExtra("title" , title);
                 startActivity(intent);
 
             }
         });
-
 
 
         progress.setVisibility(View.VISIBLE);
@@ -113,8 +118,7 @@ LinearLayout attachment;
             @Override
             public void onResponse(Call<singleComplaintBean> call, Response<singleComplaintBean> response) {
 
-                if (response.body().getStatus().equals("1"))
-                {
+                if (response.body().getStatus().equals("1")) {
 
                     Data item = response.body().getData();
 
@@ -135,17 +139,36 @@ LinearLayout attachment;
                     company.setText(item.getCompany());
                     address.setText(item.getAddress());
 
-                    if (item.getClosing().length() > 0)
-                    {
+                    vid = item.getVid();
+
+                    attachment.removeAllViews();
+
+                    for (int i = 0; i < item.getImages().size(); i++) {
+
+                        View view = View.inflate(getApplicationContext(), R.layout.attachment, null);
+                        TextView tit = view.findViewById(R.id.title);
+
+                        tit.setText(item.getImages().get(i).getImage());
+
+                        attachment.addView(view);
+
+                    }
+
+                    if (item.getClosing().length() > 0) {
                         closure1.setText(item.getClosing());
                         closure1.setVisibility(View.VISIBLE);
-                    }
-                    else
-                    {
+                    } else {
                         closure1.setVisibility(View.GONE);
                     }
 
+                    if (item.getStatus().equals("Close")) {
+                        reopen.setVisibility(View.VISIBLE);
+                    } else {
+                        reopen.setVisibility(View.GONE);
+                    }
+
                 }
+
 
                 progress.setVisibility(View.GONE);
 
@@ -157,7 +180,47 @@ LinearLayout attachment;
             }
         });
 
+        reopen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+
+                progress.setVisibility(View.VISIBLE);
+
+                Bean b = (Bean) getApplicationContext();
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(b.baseurl)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                Call<String> call = cr.changeStatus("ReOpen" , cid);
+
+                call.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+
+                        progress.setVisibility(View.GONE);
+                        Toast.makeText(ComplaintDetailsUser.this, "Submitted Successfully", Toast.LENGTH_SHORT).show();
+
+                        finish();
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        progress.setVisibility(View.GONE);
+                    }
+                });
+
+
+            }
+        });
 
     }
 }
