@@ -33,8 +33,20 @@ public interface AllApiIneterface {
     );
 
     @Multipart
+    @POST("api/getComplain1.php")
+    Call<getComplainBean> getComplain1(
+            @Part("user_id") String user_id
+    );
+
+    @Multipart
     @POST("api/getComplainById.php")
     Call<singleComplaintBean> getComplainById(
+            @Part("cid") String cid
+    );
+
+    @Multipart
+    @POST("api/getComplainById1.php")
+    Call<singleComplaintBean> getComplainById1(
             @Part("cid") String cid
     );
 
@@ -47,6 +59,15 @@ public interface AllApiIneterface {
     @Multipart
     @POST("api/submitFeedback.php")
     Call<String> submitFeedback(
+            @Part("feedback") String feedback,
+            @Part("id") String id,
+            @Part("user_id") String user_id,
+            @Part("vendor_id") String vendor_id
+    );
+
+    @Multipart
+    @POST("api/submitFeedback1.php")
+    Call<String> submitFeedback1(
             @Part("feedback") String feedback,
             @Part("id") String id,
             @Part("user_id") String user_id,
