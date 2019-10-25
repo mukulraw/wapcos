@@ -17,7 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Search"></activity>
+        <activity android:name=".Notification"></activity>
+        <activity android:name=".Notification2" />
+        <activity android:name=".Search1" />
+        <activity android:name=".Search" />
         <activity android:name=".Comments2" />
         <activity android:name=".ComplaintDetailsVendors" />
         <activity android:name=".ComplaintForm" />

@@ -15,7 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity2 extends AppCompatActivity {
     BottomNavigationView bottom;
-    ImageButton search;
+    ImageButton search , notification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +24,7 @@ public class MainActivity2 extends AppCompatActivity {
 
         bottom = findViewById(R.id.bottomNavigationView2);
         search = findViewById(R.id.imageButton);
+        notification = findViewById(R.id.imageButton2);
 
         bottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -60,7 +61,17 @@ public class MainActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(MainActivity2.this , Search.class);
+                Intent intent = new Intent(MainActivity2.this , Search1.class);
+                startActivity(intent);
+
+            }
+        });
+
+        notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MainActivity2.this , Notification.class);
                 startActivity(intent);
 
             }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +21,9 @@ import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,6 +45,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -62,6 +68,8 @@ public class ComplaintDetailsVendors extends AppCompatActivity {
     LinearLayout attachment;
     String cid, title , vid;
     ProgressBar progress;
+
+    Button addclosure;
 
     File f1;
     Uri uri;
@@ -96,6 +104,7 @@ public class ComplaintDetailsVendors extends AppCompatActivity {
         attachment = findViewById(R.id.attachment);
         progress = findViewById(R.id.progress);
         open = findViewById(R.id.open);
+        addclosure = findViewById(R.id.addclosure);
 
         setSupportActionBar(toolbar);
 
@@ -127,141 +136,86 @@ public class ComplaintDetailsVendors extends AppCompatActivity {
         });
 
 
-        progress.setVisibility(View.VISIBLE);
 
-        Bean b = (Bean) getApplicationContext();
+        loadData();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(b.baseurl)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
-
-        Call<singleComplaintBean> call = cr.getComplainById1(cid);
-
-        call.enqueue(new Callback<singleComplaintBean>() {
+        addclosure.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<singleComplaintBean> call, Response<singleComplaintBean> response) {
+            public void onClick(View v) {
 
-                if (response.body().getStatus().equals("1")) {
-
-                    final Data item = response.body().getData();
-
-                    name.setText(item.getName());
-                    category.setText(item.getCategory());
-                    date.setText(item.getCreatedDate());
-                    ack.setText(item.getAkdDate());
-                    closure.setText(item.getExpClDate());
-                    status.setText(item.getStatus());
-                    handled.setText(item.getHandled());
-                    complaint.setText(item.getComplain());
-                    vname.setText(item.getVname());
-                    category1.setText(item.getCategory());
-                    email.setText(item.getEmail());
-                    phone.setText(item.getPhone());
-                    altemail.setText(item.getAlternateemail());
-
-                    company.setText(item.getCompany());
-                    address.setText(item.getAddress());
-
-                    vid = item.getVid();
-
-                    attachment.removeAllViews();
-
-                    for (int i = 0; i < item.getImages().size(); i++) {
-
-                        View view = View.inflate(getApplicationContext(), R.layout.attachment, null);
-                        TextView tit = view.findViewById(R.id.title);
-
-                        tit.setText(item.getImages().get(i).getImage());
+                final Dialog dialog = new Dialog(ComplaintDetailsVendors.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.date_dialog);
+                dialog.show();
 
 
-                        final int finalI = i;
-                        view.setOnClickListener(new View.OnClickListener() {
+                final DatePicker picker = dialog.findViewById(R.id.date);
+                Button ok = dialog.findViewById(R.id.ok);
+
+                long now = System.currentTimeMillis() - 1000;
+                picker.setMinDate(now);
+
+                ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        int year = picker.getYear();
+                        int month = picker.getMonth();
+                        int day = picker.getDayOfMonth();
+
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(year, month, day);
+
+                        SimpleDateFormat format = new SimpleDateFormat("d-M-Y");
+                        String strDate = format.format(calendar.getTime());
+
+                        Log.d("dddd" , strDate);
+
+                        dialog.dismiss();
+
+                        progress.setVisibility(View.VISIBLE);
+
+                        Bean b = (Bean) getApplicationContext();
+
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl(b.baseurl)
+                                .addConverterFactory(ScalarsConverterFactory.create())
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                        Call<String> call = cr.addClosure(strDate , cid);
+
+                        call.enqueue(new Callback<String>() {
                             @Override
-                            public void onClick(View v) {
+                            public void onResponse(Call<String> call, Response<String> response) {
 
-                                int downloadId = PRDownloader.download("http://www.nsezwapcos.com/admin/upload/" + item.getImages().get(finalI).getImage(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() , item.getImages().get(finalI).getImage())
-                                        .build()
-                                        .setOnStartOrResumeListener(new OnStartOrResumeListener() {
-                                            @Override
-                                            public void onStartOrResume() {
 
-                                            }
-                                        })
-                                        .setOnPauseListener(new OnPauseListener() {
-                                            @Override
-                                            public void onPause() {
+                                progress.setVisibility(View.GONE);
+                                Toast.makeText(ComplaintDetailsVendors.this, "Submitted Successfully", Toast.LENGTH_SHORT).show();
 
-                                            }
-                                        })
-                                        .setOnCancelListener(new OnCancelListener() {
-                                            @Override
-                                            public void onCancel() {
+                                //finish();
+                                loadData();
 
-                                            }
-                                        })
-                                        .setOnProgressListener(new OnProgressListener() {
-                                            @Override
-                                            public void onProgress(Progress progress) {
 
-                                                Log.d("progress" , String.valueOf(progress.totalBytes));
+                            }
 
-                                            }
-                                        })
-                                        .start(new OnDownloadListener() {
-                                            @Override
-                                            public void onDownloadComplete() {
-
-                                                Log.d("completed" , "completed");
-                                                Toast.makeText(ComplaintDetailsVendors.this, "Successfully downloaded in Downloads", Toast.LENGTH_SHORT).show();
-
-                                            }
-
-                                            @Override
-                                            public void onError(Error error) {
-
-                                                Log.d("error" , error.getConnectionException().toString());
-
-                                            }
-
-                                        });
-
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                progress.setVisibility(View.GONE);
                             }
                         });
 
-                        attachment.addView(view);
+
+
+
 
                     }
+                });
 
-                    if (item.getAkdDate().equals("")) {
-                        acknowledge.setVisibility(View.VISIBLE);
-                    } else {
-                        acknowledge.setVisibility(View.GONE);
-                    }
-
-                    if (item.getStatus().equals("Open") || item.getStatus().equals("ReOpen"))
-                    {
-                        open.setText("CLOSE");
-                    }
-                    else
-                    {
-                        open.setText("OPEN");
-                    }
-
-
-                }
-
-
-                progress.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onFailure(Call<singleComplaintBean> call, Throwable t) {
-                progress.setVisibility(View.GONE);
             }
         });
 
@@ -636,6 +590,157 @@ public class ComplaintDetailsVendors extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    void loadData()
+    {
+        progress.setVisibility(View.VISIBLE);
+
+        Bean b = (Bean) getApplicationContext();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(b.baseurl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+        Call<singleComplaintBean> call = cr.getComplainById1(cid);
+
+        call.enqueue(new Callback<singleComplaintBean>() {
+            @Override
+            public void onResponse(Call<singleComplaintBean> call, Response<singleComplaintBean> response) {
+
+                if (response.body().getStatus().equals("1")) {
+
+                    final Data item = response.body().getData();
+
+                    name.setText(item.getName());
+                    category.setText(item.getCategory());
+                    date.setText(item.getCreatedDate());
+                    ack.setText(item.getAkdDate());
+                    closure.setText(item.getExpClDate());
+                    status.setText(item.getStatus());
+                    handled.setText(item.getHandled());
+                    complaint.setText(item.getComplain());
+                    vname.setText(item.getVname());
+                    category1.setText(item.getCategory());
+                    email.setText(item.getEmail());
+                    phone.setText(item.getPhone());
+                    altemail.setText(item.getAlternateemail());
+
+                    company.setText(item.getCompany());
+                    address.setText(item.getAddress());
+
+                    vid = item.getVid();
+
+                    attachment.removeAllViews();
+
+                    for (int i = 0; i < item.getImages().size(); i++) {
+
+                        View view = View.inflate(getApplicationContext(), R.layout.attachment, null);
+                        TextView tit = view.findViewById(R.id.title);
+
+                        tit.setText(item.getImages().get(i).getImage());
+
+
+                        final int finalI = i;
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                int downloadId = PRDownloader.download("http://www.nsezwapcos.com/admin/upload/" + item.getImages().get(finalI).getImage(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() , item.getImages().get(finalI).getImage())
+                                        .build()
+                                        .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                                            @Override
+                                            public void onStartOrResume() {
+
+                                            }
+                                        })
+                                        .setOnPauseListener(new OnPauseListener() {
+                                            @Override
+                                            public void onPause() {
+
+                                            }
+                                        })
+                                        .setOnCancelListener(new OnCancelListener() {
+                                            @Override
+                                            public void onCancel() {
+
+                                            }
+                                        })
+                                        .setOnProgressListener(new OnProgressListener() {
+                                            @Override
+                                            public void onProgress(Progress progress) {
+
+                                                Log.d("progress" , String.valueOf(progress.totalBytes));
+
+                                            }
+                                        })
+                                        .start(new OnDownloadListener() {
+                                            @Override
+                                            public void onDownloadComplete() {
+
+                                                Log.d("completed" , "completed");
+                                                Toast.makeText(ComplaintDetailsVendors.this, "Successfully downloaded in Downloads", Toast.LENGTH_SHORT).show();
+
+                                            }
+
+                                            @Override
+                                            public void onError(Error error) {
+
+                                                Log.d("error" , error.getConnectionException().toString());
+
+                                            }
+
+                                        });
+
+                            }
+                        });
+
+                        attachment.addView(view);
+
+                    }
+
+                    if (item.getAkdDate().equals("")) {
+                        acknowledge.setVisibility(View.VISIBLE);
+                    } else {
+                        acknowledge.setVisibility(View.GONE);
+                    }
+
+
+                    if (item.getExpClDate().equals("")) {
+                        closure.setVisibility(View.GONE);
+                        addclosure.setVisibility(View.VISIBLE);
+                    } else {
+                        closure.setVisibility(View.VISIBLE);
+                        addclosure.setVisibility(View.GONE);
+                    }
+
+
+                    if (item.getStatus().equals("Open") || item.getStatus().equals("ReOpen"))
+                    {
+                        open.setText("CLOSE");
+                    }
+                    else
+                    {
+                        open.setText("OPEN");
+                    }
+
+
+                }
+
+
+                progress.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onFailure(Call<singleComplaintBean> call, Throwable t) {
+                progress.setVisibility(View.GONE);
+            }
+        });
     }
 
 }

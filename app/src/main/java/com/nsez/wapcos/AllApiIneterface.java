@@ -118,4 +118,30 @@ public interface AllApiIneterface {
             @Part("data") String data
     );
 
+    @Multipart
+    @POST("api/search1.php")
+    Call<searchBean> search1(
+            @Part("user_id") String user_id,
+            @Part("data") String data
+    );
+
+    @Multipart
+    @POST("api/addClosure.php")
+    Call<String> addClosure(
+            @Part("cldate") String cldate,
+            @Part("id") String id
+    );
+
+    @Multipart
+    @POST("api/vendor_noti.php")
+    Call<getComplainBean> user_noti(
+            @Part("user_id") String user_id
+    );
+
+    @Multipart
+    @POST("api/user_noti.php")
+    Call<getComplainBean> vendor_noti(
+            @Part("user_id") String user_id
+    );
+
 }
