@@ -52,6 +52,18 @@ public class MainActivity extends AppCompatActivity {
                     //ft.addToBackStack(null);
                     ft.commit();
                 }
+                else if (iidd == R.id.add)
+                {
+
+                    FragmentManager fm = getSupportFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    addComp test = new addComp();
+                    ft.replace(R.id.replace, test);
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                    //ft.addToBackStack(null);
+                    ft.commit();
+
+                }
 
                 return true;
             }
@@ -80,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        complaint test = new complaint();
+        addComp test = new addComp();
         ft.replace(R.id.replace, test);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
         //ft.addToBackStack(null);

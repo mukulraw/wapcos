@@ -690,7 +690,10 @@ public class ComplaintDetailsVendors extends AppCompatActivity {
                                             @Override
                                             public void onError(Error error) {
 
-                                                Log.d("error" , error.getConnectionException().toString());
+                                                //Log.d("error" , error.getConnectionException().toString());
+                                                Log.d("error" , error.getServerErrorMessage());
+
+
 
                                             }
 
@@ -719,7 +722,7 @@ public class ComplaintDetailsVendors extends AppCompatActivity {
                     }
 
 
-                    if (item.getStatus().equals("Open") || item.getStatus().equals("ReOpen"))
+                    if (item.getStatus().equals("Open") || item.getStatus().equals("ReOpen") || item.getStatus().equals("Acknowledge"))
                     {
                         open.setText("CLOSE");
                     }

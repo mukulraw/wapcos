@@ -21,6 +21,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -309,10 +310,34 @@ public class ComplaintForm extends AppCompatActivity {
 
                 list.add(body);
 
-                View view = View.inflate(getApplicationContext(), R.layout.attachment, null);
+                final View view = View.inflate(getApplicationContext(), R.layout.attachment1, null);
                 TextView tit = view.findViewById(R.id.title);
+                ImageButton delete = view.findViewById(R.id.imageButton3);
+
+                delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                        list.remove(Integer.parseInt(view.getTag().toString()) - 1);
+                        attachment.removeView(view);
+
+
+                    }
+                });
 
                 tit.setText(f1.getName());
+
+                view.setTag(String.valueOf(list.size()));
+
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Log.d("pos" , view.getTag().toString());
+
+                    }
+                });
 
                 attachment.addView(view);
 
@@ -337,10 +362,35 @@ public class ComplaintForm extends AppCompatActivity {
 
                 list.add(body);
 
-                View view = View.inflate(getApplicationContext(), R.layout.attachment, null);
+                final View view = View.inflate(getApplicationContext(), R.layout.attachment1, null);
                 TextView tit = view.findViewById(R.id.title);
 
+                ImageButton delete = view.findViewById(R.id.imageButton3);
+
+                delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                        list.remove(Integer.parseInt(view.getTag().toString()) - 1);
+                        attachment.removeView(view);
+
+
+                    }
+                });
+
                 tit.setText(f1.getName());
+
+                view.setTag(String.valueOf(list.size()));
+
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Log.d("pos" , view.getTag().toString());
+
+                    }
+                });
 
                 attachment.addView(view);
 

@@ -1,11 +1,5 @@
 package com.nsez.wapcos;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,56 +10,47 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.List;
 import java.util.Objects;
 
-public class ChooseService extends AppCompatActivity {
+public class addComp extends Fragment {
 
     Toolbar toolbar;
     RecyclerView grid;
     FAQAdapter adapter;
     GridLayoutManager manager;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_service);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_choose_service , container , false);
 
-        toolbar = findViewById(R.id.toolbar);
-        grid = findViewById(R.id.grid);
+        toolbar = view.findViewById(R.id.toolbar);
+        grid = view.findViewById(R.id.grid);
 
-        adapter = new FAQAdapter(this);
-        manager = new GridLayoutManager(this, 3);
+        adapter = new FAQAdapter(getContext());
+        manager = new GridLayoutManager(getContext(), 3);
 
         grid.setAdapter(adapter);
         grid.setLayoutManager(manager);
 
-        setSupportActionBar(toolbar);
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-
-        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        toolbar.setTitleTextColor(Color.WHITE);
-        toolbar.setTitle("Add Complaint");
-
+        return view;
     }
 
     class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.ViewHolder> {
         Context context;
 
         int[] images = {
-                R.drawable.security,
+                R.drawable.security2,
                 R.drawable.lifts,
                 R.drawable.garden,
                 R.drawable.water,

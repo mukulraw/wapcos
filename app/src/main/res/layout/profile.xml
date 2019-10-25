@@ -103,6 +103,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Log Out"
+        android:textAllCaps="true"
+        android:textSize="18sp"
         android:id="@+id/logout"
         android:textColor="@color/colorAccent"
         android:padding="20dp"/>
