@@ -20,14 +20,16 @@ public interface AllApiIneterface {
     @POST("api/login.php")
     Call<loginBean> login(
             @Part("username") String username,
-            @Part("password") String password
+            @Part("password") String password,
+            @Part("token") String token
     );
 
     @Multipart
     @POST("api/login2.php")
     Call<loginBean> login2(
             @Part("username") String username,
-            @Part("password") String password
+            @Part("password") String password,
+            @Part("token") String token
     );
 
     @Multipart

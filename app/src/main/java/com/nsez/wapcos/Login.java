@@ -85,7 +85,7 @@ public class Login extends AppCompatActivity {
 
                             AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
-                            Call<loginBean> call = cr.login(u , p);
+                            Call<loginBean> call = cr.login(u , p , "");
 
                             call.enqueue(new Callback<loginBean>() {
                                 @Override
@@ -163,7 +163,7 @@ public class Login extends AppCompatActivity {
 
                             AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
-                            Call<loginBean> call = cr.login2(u , p);
+                            Call<loginBean> call = cr.login2(u , p , "");
 
                             call.enqueue(new Callback<loginBean>() {
                                 @Override
